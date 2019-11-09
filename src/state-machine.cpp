@@ -10,7 +10,7 @@ void state_machine::move(const std::pair<token, std::string>& input) {
     /*
     std::cout << "STATE: " << to_string(m_current)
               << "\nTOKEN : " << naive_lexer::to_string(t) << "\n\n";
-              */
+    */
     switch(m_current) {
     case state::initial:
         switch (t) {
@@ -337,4 +337,8 @@ std::string state_machine::to_string(state s) {
 
 const tree& state_machine::get_ast() const {
     return m_ast;
+}
+
+void  state_machine::reset() {
+    m_ast.reset();
 }

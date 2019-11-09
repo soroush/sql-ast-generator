@@ -326,3 +326,11 @@ std::string tree::to_dot_graph() const {
     str << "}\n";
     return str.str();
 }
+
+void tree::reset() {
+    m_root.children.clear();
+    m_root.label.clear();
+    m_root.uid.clear();
+    m_root.value.clear();
+    m_max_uid = 1;
+}

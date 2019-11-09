@@ -53,6 +53,7 @@ public:
     bool is_accepted() const;
     static std::string to_string(state);
     const tree& get_ast() const;
+    void reset();
 private:
     state m_current;
     tree m_ast;

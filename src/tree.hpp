@@ -25,12 +25,12 @@ public:
     void select_add_column(const std::string& column);
     void select_add_where_clause();
     void push_stack(const std::string& label, const std::string& value);
-    // 
+    //
     void select_add_order_by_statement();
     void select_add_order_by(const std::string& field_name);
     void select_add_order_by_direction(const std::string& direction);
     void clause_to_postfix();
-    // 
+    //
     void delete_init();
     void delete_set_table(const std::string& name);
     //
@@ -39,6 +39,7 @@ public:
     //
     void save(const std::string& path) const;
     std::string to_dot_graph() const;
+    void reset();
 private:
     node m_root;
     int m_max_uid;

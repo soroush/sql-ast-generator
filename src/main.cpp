@@ -11,6 +11,7 @@ int main(int argc, char const* argv[]) {
     state_machine m;
     std::string input;
     while(std::getline(std::cin, input)) {
+        m.reset();
         auto all_tokens = l.tokenize(input);
         for(const auto& t : all_tokens) {
             m.move(t);

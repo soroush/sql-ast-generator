@@ -21,7 +21,7 @@ naive_lexer::naive_lexer() {
     acceptors.emplace_back(token::comma, std::regex{"^\\s*,\\s*"});
     acceptors.emplace_back(token::value, std::regex{"^\\s*([[:alpha:]_][[:alnum:]_]*(\\(\\))|[[:digit:]]+|\\\".*\\\"|NULL)\\s*",
                            std::regex_constants::icase});
-    acceptors.emplace_back(token::identifier, std::regex{"^\\s*[[:alpha:]_][[:alnum:]_]*\\s*",
+    acceptors.emplace_back(token::identifier, std::regex{"^\\s*[[:alpha:]_][[:alnum:]_]*(\\.?[[:alpha:]_][[:alnum:]_]*)?\\s*",
                            std::regex_constants::icase});
     acceptors.emplace_back(token::semicolon, std::regex{"^\\s*;\\s*"});
 }
