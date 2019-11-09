@@ -4,6 +4,8 @@ Generate AST from simple SQL statements.
 ## Usage
 
 ```bash
+$ cat ./statement.sql
+SELECT id, name, address FROM users WHERE is_customer IS NOT NULL ORDER BY created;
 $ cat ./statement.sql | ./naive-sql-parser > ./statement.dot
 $ # Visualize graph:
 $ dot -Tpng ./statement.dot > ./statement.png
