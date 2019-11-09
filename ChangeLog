@@ -1,0 +1,3 @@
+2019-11-09  Soroush Rabiei <soroush.rabiei@gmai.com>
+
+    * Add initial parser source code. Only supports insert and select operations.
