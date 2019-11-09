@@ -30,7 +30,15 @@ public:
     void select_add_order_by(const std::string& field_name);
     void select_add_order_by_direction(const std::string& direction);
     void clause_to_postfix();
+    // 
+    void delete_init();
+    void delete_set_table(const std::string& name);
+    //
+    void use_init();
+    void use_set_database(const std::string& table_name);
+    //
     void save(const std::string& path) const;
+    std::string to_dot_graph() const;
 private:
     node m_root;
     int m_max_uid;

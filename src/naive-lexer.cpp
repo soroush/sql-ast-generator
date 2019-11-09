@@ -6,6 +6,8 @@ naive_lexer::naive_lexer() {
     acceptors.emplace_back(token::select, std::regex{"^\\s*SELECT\\s+", std::regex_constants::icase});
     acceptors.emplace_back(token::from, std::regex{"^\\s*FROM\\s+", std::regex_constants::icase});
     acceptors.emplace_back(token::where, std::regex{"^\\s*WHERE\\s+", std::regex_constants::icase});
+    acceptors.emplace_back(token::delete_, std::regex{"^\\s*DELETE\\s+", std::regex_constants::icase});
+    acceptors.emplace_back(token::use, std::regex{"^\\s*USE\\s+", std::regex_constants::icase});
     acceptors.emplace_back(token::is_not, std::regex{"^\\s*IS\\s*NOT\\s+", std::regex_constants::icase});
     acceptors.emplace_back(token::is, std::regex{"^\\s*IS\\s+", std::regex_constants::icase});
     acceptors.emplace_back(token::order_by, std::regex{"^\\s*ORDER\\s*BY\\s+", std::regex_constants::icase});
@@ -26,47 +28,51 @@ naive_lexer::naive_lexer() {
 
 std::string naive_lexer::to_string(token t) {
     switch(t) {
-        case token::insert_into:
-            return "insert_into";
-        case token::identifier:
-            return "[identifier]";
-        case token::left_paren:
-            return "left_paren";
-        case token::right_paren:
-            return "right_paren";
-        case token::semicolon:
-            return "semicolon";
-        case token::values:
-            return "values";
-        case token::value:
-            return "[value]";
-        case token::comma:
-            return "comma";
-        case token::select:
-            return "select";
-        case token::from:
-            return "from";
-        case token::where:
-            return "where";
-        case token::is_not:
-            return "is_not";
-        case token::is:
-            return "is";
-        case token::order_by:
-            return "order_by";
-        case token::asc:
-            return "asc";
-        case token::desc:
-            return "desc";
-        case token::greater:
-            return "greater";
-        case token::lesser:
-            return "lesser";
-        case token::equal:
-            return "equal";
-        default:
-            return "[invalid]";
-            break;
+    case token::insert_into:
+        return "insert_into";
+    case token::identifier:
+        return "[identifier]";
+    case token::left_paren:
+        return "left_paren";
+    case token::right_paren:
+        return "right_paren";
+    case token::semicolon:
+        return "semicolon";
+    case token::values:
+        return "values";
+    case token::value:
+        return "[value]";
+    case token::comma:
+        return "comma";
+    case token::select:
+        return "select";
+    case token::from:
+        return "from";
+    case token::where:
+        return "where";
+    case token::is_not:
+        return "is_not";
+    case token::is:
+        return "is";
+    case token::order_by:
+        return "order_by";
+    case token::asc:
+        return "asc";
+    case token::desc:
+        return "desc";
+    case token::greater:
+        return "greater";
+    case token::lesser:
+        return "lesser";
+    case token::equal:
+        return "equal";
+    case token::delete_:
+        return "delete";
+    case token::use:
+        return "use";
+    default:
+        return "[invalid]";
+        break;
     }
 }
 
@@ -87,7 +93,8 @@ std::vector<std::pair<token, std::string>> naive_lexer::tokenize(std::string& in
                 break;
             }
         }
-    } while(found);
+    }
+    while(found);
     return tokens;
 }
 

@@ -10,6 +10,17 @@ class state_machine {
 public:
     enum class state {
         initial,
+        // USE
+        u1,
+        u2,
+        // DELETE,
+        r1,
+        r2,
+        r3,
+        r4,
+        r5,
+        r6,
+        r7,
         // INSERT INTO ...
         q1,
         q2,

@@ -12,6 +12,8 @@ enum class token {
     select,         // ^\s*SELECT\s*
     from,           // ^\s*FROM\s*
     where,          // ^\s*WHERE\s*
+    delete_,        // ^\s*DETELE\s*
+    use,            // ^\s*USE\s*
     is_not,         // ^\s*IS\s*NOT\s*
     is,             // ^\s*IS\s*
     greater,        // ^\s*>\s*

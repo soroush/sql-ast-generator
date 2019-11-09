@@ -1,6 +1,7 @@
 #include "tree.hpp"
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <list>
 
@@ -227,7 +228,7 @@ void tree::clause_to_postfix() {
     while(!operators.empty()) {
         node op = operators.back();
         operators.pop_back();
-        // operand #1 
+        // operand #1
         // CAUTION: Pay attetion to directions. Must be stack-like
         node op1 = outputs.back();
         outputs.pop_back();
@@ -241,6 +242,43 @@ void tree::clause_to_postfix() {
     }
 }
 
+void tree::delete_init() {
+    m_root.children.clear();
+    m_root.label = "statement";
+    m_root.value = "delete";
+    m_max_uid = 1;
+    m_root.uid = "node_" + std::to_string(m_max_uid);
+}
+
+void tree::delete_set_table(const std::string& name) {
+    node delete_node;
+    delete_node.label = "table";
+    delete_node.value = "table";
+    delete_node.uid = "node_" + std::to_string(++m_max_uid);
+    node table;
+    table.label = "table";
+    table.value = name;
+    table.uid = "node_" + std::to_string(++m_max_uid);
+    delete_node.children.push_back(table);
+    m_root.children.push_back(delete_node);
+}
+
+void tree::use_init() {
+    m_root.children.clear();
+    m_root.label = "statement";
+    m_root.value = "use";
+    m_max_uid = 1;
+    m_root.uid = "node_" + std::to_string(m_max_uid);
+}
+
+void tree::use_set_database(const std::string& dbname) {
+    node use_node;
+    use_node.label = "database";
+    use_node.value = dbname;
+    use_node.uid = "node_" + std::to_string(++m_max_uid);
+    m_root.children.push_back(use_node);
+}
+
 std::string replace_all(std::string& input,
                         const std::string& find,
                         const std::string& replace) {
@@ -252,7 +290,7 @@ std::string replace_all(std::string& input,
     return input;
 }
 
-void print_nodes(const node& n, std::ofstream& o) {
+void print_nodes(const node& n, std::ostream& o) {
     std::string n_label = n.value;
     n_label = replace_all(n_label, "\"", "\\\"");
     o << "\"" + n.uid + "\" [label=\"" + n_label + "\"]\n";
@@ -261,7 +299,7 @@ void print_nodes(const node& n, std::ofstream& o) {
     }
 }
 
-void print_helper(const node& n, std::ofstream& o) {
+void print_helper(const node& n, std::ostream& o) {
     for(const node& c : n.children) {
         o << n.uid << " -> " << c.uid << '\n';
     }
@@ -276,9 +314,15 @@ void tree::save(const std::string& path) const {
         std::cerr << "Unable to open file: " << path << "!\n";
         return;
     }
-    f << "digraph G {\n";
-    print_nodes(m_root, f);
-    print_helper(m_root, f);
-    f << "}\n";
+    f << to_dot_graph();
     f.close();
+}
+
+std::string tree::to_dot_graph() const {
+    std::stringstream str;
+    str << "digraph G {\n";
+    print_nodes(m_root, str);
+    print_helper(m_root, str);
+    str << "}\n";
+    return str.str();
 }

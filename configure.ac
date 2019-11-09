@@ -14,6 +14,8 @@ AC_PROG_CXX
 AM_INIT_AUTOMAKE
 AM_SILENT_RULES([yes])
 
+LT_INIT([static shared pic-only])
+
 # Checks for libraries.
 
 # Checks for header files.

@@ -7,17 +7,31 @@ state_machine::state_machine() :
 void state_machine::move(const std::pair<token, std::string>& input) {
     const token t = input.first;
     const std::string v = input.second;
+    /*
     std::cout << "STATE: " << to_string(m_current)
               << "\nTOKEN : " << naive_lexer::to_string(t) << "\n\n";
+              */
     switch(m_current) {
     case state::initial:
-        if(t == token::insert_into) {
+        switch (t) {
+        case token::insert_into :
             m_ast.insert_init();
             m_current = state::q1;
-        }
-        else if(t == token::select) {
+            break;
+        case token::select :
             m_ast.select_init();
             m_current = state::p1;
+            break;
+        case token::delete_ :
+            m_ast.delete_init();
+            m_current = state::r1;
+            break;
+        case token::use :
+            m_ast.use_init();
+            m_current = state::u1;
+            break;
+        default:
+            break;
         }
         break;
     case state::q1:
@@ -183,6 +197,60 @@ void state_machine::move(const std::pair<token, std::string>& input) {
             m_current = state::accept;
         }
         break;
+    case state::u1:
+        if( t == token::identifier) {
+            m_ast.use_set_database(v);
+            m_current = state::u2;
+        }
+        break;
+    case state::u2:
+        if(t == token::semicolon) {
+            m_current = state::accept;
+        }
+        break;
+    case state::r1:
+        if(t == token::from) {
+            m_current = state::r2;
+        }
+        break;
+    case state::r2:
+        if(t == token::identifier) {
+            m_ast.delete_set_table(v);
+            m_current = state::r3;
+        }
+        break;
+    case state::r3:
+        if(t == token::where) {
+            m_ast.select_add_where_clause();
+            m_current = state::r4;
+        }
+        break;
+    case state::r4:
+        if(t == token::identifier) {
+            m_ast.push_stack("where_field", v);
+            m_current = state::r5;
+        }
+        break;
+    case state::r5:
+        if(t == token::is || t == token::is_not ||
+                t == token::greater || t == token::lesser ||
+                t == token::equal ) {
+            m_ast.push_stack("where_operator", v);
+            m_current = state::r6;
+        }
+        break;
+    case state::r6:
+        if(t == token::value || t == token::identifier) {
+            m_ast.push_stack("where_value", v);
+            m_ast.clause_to_postfix();
+            m_current = state::r7;
+        }
+        break;
+    case state::r7:
+        if(t == token::semicolon) {
+            m_current = state::accept;
+        }
+        break;
     case state::accept:
         break;
     default:
@@ -200,6 +268,10 @@ std::string state_machine::to_string(state s) {
         return "accept";
     case state::initial :
         return "initial";
+    case state::u1 :
+        return "u1";
+    case state::u2 :
+        return "u2";
     case state::q1 :
         return "q1";
     case state::q2 :
@@ -244,6 +316,20 @@ std::string state_machine::to_string(state s) {
         return "p10";
     case state::p11 :
         return "p11";
+    case state::r1 :
+        return "r1";
+    case state::r2 :
+        return "r2";
+    case state::r3 :
+        return "r3";
+    case state::r4 :
+        return "r4";
+    case state::r5 :
+        return "r5";
+    case state::r6 :
+        return "r6";
+    case state::r7 :
+        return "r7";
     default:
         return "INVALID";
     }
