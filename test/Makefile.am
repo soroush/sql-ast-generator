@@ -14,3 +14,6 @@ tst_sql_parser_SOURCES = \
     tst-sql-parser.cpp
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
+
+EXTRA_DIST = \
+    $(check_SCRIPTS)
