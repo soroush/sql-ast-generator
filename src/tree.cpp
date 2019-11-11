@@ -72,7 +72,7 @@ void tree::select_init() {
 void tree::select_set_table(const std::string& name) {
     node from_node {"from", "from"};
     m_root.children.push_back(from_node);
-    node table_node{"table",name};
+    node table_node{"table", name};
     table_node.children.push_back(table_node);
 }
 
@@ -219,22 +219,34 @@ void print_helper(const node& n, std::ostream& o) {
     }
 }
 
-void tree::save(const std::string& path) const {
+void tree::save(const std::string& path, const std::string& legend) const {
     std::ofstream f{path};
     if(!f.is_open()) {
         std::cerr << "Unable to open file: " << path << "!\n";
         return;
     }
-    f << to_dot_graph();
+    f << to_dot_graph(legend);
     f.close();
 }
 
-std::string tree::to_dot_graph() const {
+std::string tree::to_dot_graph(const std::string& legend) const {
     std::stringstream str;
     str << "digraph G {\n";
+    if(!legend.empty()) {
+        std::string label = legend;
+        replace_all(label, "\"", "\\\"");
+        str << "\tgraph [\n\tlabel = ";
+        str << "\"" << label << "\"\n";
+        str << "\tlabelloc = t\n";
+        str << "\t]\n";
+        str << "\tsubgraph {\n";
+    }
     print_nodes(m_root, str);
     print_helper(m_root, str);
     str << "}\n";
+    if(!legend.empty()) {
+        str << "}\n";
+    }
     return str.str();
 }
 

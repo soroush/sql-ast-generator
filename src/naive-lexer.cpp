@@ -76,7 +76,7 @@ std::string naive_lexer::to_string(token t) {
     }
 }
 
-std::vector<std::pair<token, std::string>> naive_lexer::tokenize(std::string& input) {
+std::vector<std::pair<token, std::string>> naive_lexer::tokenize(std::string input) {
     std::vector<std::pair<token, std::string>> tokens;
     bool found;
     do {

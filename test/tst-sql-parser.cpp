@@ -26,7 +26,8 @@ int main(int argc, char* argv[]) {
                       << line << '\n';
             return EXIT_FAILURE;
         } else {
-            m.get_ast().save("statement_" + std::to_string(lineno) + ".dot");
+            m.get_ast().save("statement_" + std::to_string(lineno) + ".dot",
+                             line);
         }
     }
     return 0;

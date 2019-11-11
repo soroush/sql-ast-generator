@@ -43,8 +43,8 @@ public:
     void use_init();
     void use_set_database(const std::string& table_name);
     //
-    void save(const std::string& path) const;
-    std::string to_dot_graph() const;
+    void save(const std::string& path, const std::string& legend = "") const;
+    std::string to_dot_graph(const std::string& legend = "") const;
     void reset();
 private:
     node m_root;

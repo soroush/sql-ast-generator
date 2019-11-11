@@ -36,7 +36,7 @@ class naive_lexer {
 public:
     naive_lexer();
     static std::string to_string(token t);
-    std::vector<std::pair<token, std::string>> tokenize(std::string& input);
+    std::vector<std::pair<token, std::string>> tokenize(std::string input);
     std::pair<token, std::string> next_token(std::string& input);
 private:
     std::vector<std::pair<token, std::regex>> acceptors;
