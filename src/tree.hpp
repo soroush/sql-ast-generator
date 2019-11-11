@@ -6,9 +6,15 @@
 #include <stack>
 
 struct node {
+    node();
+    node(const std::string& label, const std::string& value);
+    std::string id() const;
+    // members
     std::string label;
     std::string value;
     std::vector<node> children;
+private:
+    static std::string next_id();
     std::string uid;
 };
 
@@ -42,7 +48,6 @@ public:
     void reset();
 private:
     node m_root;
-    int m_max_uid;
     std::stack<node> m_stack;
 };
 

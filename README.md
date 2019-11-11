@@ -11,7 +11,12 @@ $ # Visualize graph:
 $ dot -Tpng ./statement.dot > ./statement.png
 ```
 ## Results
-![results](sample.png)
+![results](statement_2.png)
+![results](statement_3.png)
+![results](statement_4.png)
+![results](statement_5.png)
+![results](statement_6.png)
+![results](statement_1.png)
 
 ## Tests
 Put your sql statements in `test/queries.sql`, one in each line. Run `check` target to generate `.dot` graph description files.
@@ -25,6 +30,8 @@ $ make check
 $ # or make check TESTS=visualize.sh
 ```
 
+## Windows Support
+Visual Studio 2017 Solution is provided in win32 directory.
 
 ## Caveats
 
