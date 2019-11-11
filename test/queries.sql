@@ -4,3 +4,4 @@ INSERT INTO user_notes (id, user_id, note, created) VALUES (1, 1, "Note 1", NOW(
 DELETE FROM database2.logs WHERE id < 1000;
 SELECT filed1, filed2_and_half FROM __table_weired WHERE filed1 > 10;
 SELECT text_field FROM text_table WHERE text_field = "Unable to resolve host";
+SELECT name, last_name FROM db1.users WHERE name = "Soroush" order by last_name;
