@@ -49,6 +49,7 @@ public:
 private:
     node m_root;
     std::stack<node> m_stack;
+    node& find_or_create(node& parent, const std::string& label, const std::string& value);
 };
 
 #endif // RIPS_TREE_HPP

@@ -27,10 +27,8 @@ std::string node::next_id() {
 }
 
 void tree::insert_set_table(const std::string& name) {
-    node insert{"table", "table"};
-    node table{"table", name};
-    insert.children.push_back(table);
-    m_root.children.push_back(insert);
+    node& from_node = find_or_create(m_root, "into", "into");
+    from_node.children.emplace_back("table", name);
 }
 
 void tree::insert_init() {
@@ -38,31 +36,13 @@ void tree::insert_init() {
 }
 
 void tree::insert_add_column(const std::string& column) {
-    // Find or create columns root node
-    auto predicate = [](const node & n)->bool{return n.label == "columns";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    if(found == m_root.children.end()) {
-        node new_node{"columns", "columns"};
-        m_root.children.push_back(new_node);
-        found = std::prev(m_root.children.end());
-    }
-    node column_node {"column", column};
-    found->children.push_back(column_node);
+    node& found = find_or_create(m_root, "columns", "columns");
+    found.children.emplace_back("column", column);
 }
 
 void tree::insert_add_value(const std::string& value) {
-    // Find or create values root node
-    auto predicate = [](const node & n)->bool{return n.label == "values";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    if(found == m_root.children.end()) {
-        node new_node {"values", "values"};
-        m_root.children.push_back(new_node);
-        found = std::prev(m_root.children.end());
-    }
-    node value_node {"value", value};
-    found->children.push_back(value_node);
+    node& found = find_or_create(m_root, "values", "values");
+    found.children.emplace_back("value", value);
 }
 
 void tree::select_init() {
@@ -70,69 +50,35 @@ void tree::select_init() {
 }
 
 void tree::select_set_table(const std::string& name) {
-    node from_node {"from", "from"};
-    m_root.children.push_back(from_node);
-    node table_node{"table", name};
-    table_node.children.push_back(table_node);
+    node& from_node = find_or_create(m_root, "from", "from");
+    from_node.children.emplace_back("table", name);
 }
 
 void tree::select_add_column(const std::string& column) {
-    // Find or create columns root node
-    auto predicate = [](const node & n)->bool{return n.label == "columns";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    if(found == m_root.children.end()) {
-        node new_node{"columns", "columns"};
-        m_root.children.push_back(new_node);
-        found = std::prev(m_root.children.end());
-    }
-    node value_node {"value", column};
-    found->children.push_back(value_node);
+    node& found = find_or_create(m_root, "columns", "column");
+    found.children.emplace_back("value", column);
 }
 
 void tree::push_stack(const std::string& label, const std::string& value) {
-    node new_node {label, value};
-    m_stack.push(new_node);
+    m_stack.emplace(label, value);
 }
 
 void tree::select_add_order_by_statement() {
-    // Find or create order by root node
-    auto predicate = [](const node & n)->bool{return n.label == "order_by";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    if(found == m_root.children.end()) {
-        node new_node {"order_by", "order_by"};
-        m_root.children.push_back(new_node);
-    }
+    find_or_create(m_root, "order_by", "order_by");
 }
 
 void tree::select_add_order_by(const std::string& field_name) {
-    select_add_order_by_statement();
-    auto predicate = [](const node & n)->bool{return n.label == "order_by";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    node new_node{"id", field_name};
-    found->children.push_back(new_node);
+    node& found = find_or_create(m_root, "order_by", "order_by");
+    found.children.emplace_back("id", field_name);
 }
 
 void tree::select_add_order_by_direction(const std::string& direction) {
-    select_add_order_by_statement();
-    auto predicate = [](const node & n)->bool{return n.label == "order_by";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    node new_node{"direction", direction};
-    found->children.push_back(new_node);
+    node& found = find_or_create(m_root, "order_by", "order_by");
+    found.children.emplace_back("direction", direction);
 }
 
 void tree::select_add_where_clause() {
-    // Find or create "where" root node
-    auto predicate = [](const node & n)->bool{return n.label == "where";};
-    auto found = std::find_if(m_root.children.begin(),
-                              m_root.children.end(), predicate);
-    if(found == m_root.children.end()) {
-        node new_node {"where", "where"};
-        m_root.children.push_back(new_node);
-    }
+    find_or_create(m_root, "where", "where");
 }
 
 void tree::clause_to_postfix() {
@@ -204,18 +150,18 @@ std::string replace_all(std::string& input,
 void print_nodes(const node& n, std::ostream& o) {
     std::string n_label = n.value;
     n_label = replace_all(n_label, "\"", "\\\"");
-    o << "\"" + n.id() + "\" [label=\"" + n_label + "\"]\n";
+    o << "\t\t\"" + n.id() + "\" [label=\"" + n_label + "\"]\n";
     for(const node& c : n.children) {
         print_nodes(c, o);
     }
 }
 
-void print_helper(const node& n, std::ostream& o) {
+void print_edges(const node& n, std::ostream& o) {
     for(const node& c : n.children) {
-        o << n.id() << " -> " << c.id() << '\n';
+        o << "\t\t" << n.id() << " -> " << c.id() << '\n';
     }
     for(const node& c : n.children) {
-        print_helper(c, o);
+        print_edges(c, o);
     }
 }
 
@@ -235,15 +181,16 @@ std::string tree::to_dot_graph(const std::string& legend) const {
     if(!legend.empty()) {
         std::string label = legend;
         replace_all(label, "\"", "\\\"");
-        str << "\tgraph [\n\tlabel = ";
+        str << "\tgraph [\n";
+        str << "\t\tlabel = ";
         str << "\"" << label << "\"\n";
-        str << "\tlabelloc = t\n";
+        str << "\t\tlabelloc = t\n";
         str << "\t]\n";
         str << "\tsubgraph {\n";
     }
     print_nodes(m_root, str);
-    print_helper(m_root, str);
-    str << "}\n";
+    print_edges(m_root, str);
+    str << "\t}\n";
     if(!legend.empty()) {
         str << "}\n";
     }
@@ -251,7 +198,20 @@ std::string tree::to_dot_graph(const std::string& legend) const {
 }
 
 void tree::reset() {
+    // TODO: Check for memory leak (which does not exists)
     m_root.children.clear();
     m_root.label.clear();
     m_root.value.clear();
+}
+
+node& tree::find_or_create(node& parent, const std::string& label, const std::string& value) {
+    auto predicate = [&](const node & n)->bool{return n.label == label;};
+    auto found = std::find_if(parent.children.begin(),
+                              parent.children.end(), predicate);
+    if(found == parent.children.end()) {
+        node new_node{label, value};
+        parent.children.push_back(new_node);
+        found = std::prev(m_root.children.end());
+    }
+    return *found;
 }
