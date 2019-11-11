@@ -7,19 +7,18 @@ int main(int argc, char const* argv[]) {
     //std::string sample = "DELETE FROM database2 WHERE id < 1000;";
     // std::string sample = "USE db1;";
     // Read input
-    naive_lexer l;
-    state_machine m;
     std::string input;
     while(std::getline(std::cin, input)) {
+        naive_lexer l;
+        state_machine m;
         m.reset();
         auto all_tokens = l.tokenize(input);
         for(const auto& t : all_tokens) {
             m.move(t);
         }
         if(m.is_accepted()) {
-            std::cout << m.get_ast().to_dot_graph();
-        }
-        else {
+            std::cout << m.get_ast().to_dot_graph(input);
+        } else {
             std::cerr << "Input string is not valid!\n";
         }
     }

@@ -128,9 +128,10 @@ void state_machine::move(const std::pair<token, std::string>& input) {
             m_ast.select_add_where_clause();
             m_current = state::p5;
         }
-        else if(t == token::from) {
-            m_current = state::p3;
-        }
+        // Bug?
+        // else if(t == token::from) {
+        //     m_current = state::p3;
+        // }
         break;
     case state::p5:
         if(t == token::identifier) {
@@ -262,6 +263,7 @@ bool state_machine::is_accepted() const {
     return m_current == state::accept;
 }
 
+// Nothing to see here! Only for debugging...
 std::string state_machine::to_string(state s) {
     switch(s) {
     case state::accept:
