@@ -119,7 +119,7 @@ void state_machine::move(const std::pair<token, std::string>& input) {
         break;
     case state::p3:
         if(t == token::identifier) {
-            m_ast.insert_set_table(v);
+            m_ast.select_set_table(v);
             m_current = state::p4;
         }
         break;

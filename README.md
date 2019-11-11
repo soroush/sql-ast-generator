@@ -16,6 +16,7 @@ $ dot -Tpng ./statement.dot > ./statement.png
 ![results](statement_4.png)
 ![results](statement_5.png)
 ![results](statement_6.png)
+![results](statement_7.png)
 ![results](statement_1.png)
 
 ## Tests
